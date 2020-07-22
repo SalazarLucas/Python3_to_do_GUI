@@ -1,4 +1,5 @@
 from tkinter import *
+import json
 
 
 # Main Tk window
@@ -17,8 +18,6 @@ class MainWindow(Tk):
 class TaskEntry(Entry):
     def __init__(self, master, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
-
-        # Entry to receive new tasks from user
         self['textvariable'] = task
         self['width'] = 15
         self.configure(background='#222222',
@@ -35,11 +34,38 @@ class TaskEntry(Entry):
 class TaskFrame(Frame):
     def __init__(self, master, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
-
-        # Frame configuration
         self.configure(background='#222222', padx=20)
         self.grid(column=0, row=1, sticky='nwse')
         self.grid_columnconfigure(0, weight=1)
+
+    # Method to add tasks to the grid
+    def add_task(self, *args):
+        Task(self).grid(column=0, sticky='nswe')
+        task_entry.delete_input()
+        self.update_storage_file()
+
+    # Method to check for stored tasks and add them to the grid
+    def check_stored_tasks(self):
+        try:
+            with open('tasks.json', 'rt') as tasks:
+                tasks_string_list = json.load(tasks)
+            tasks.close()
+
+            for string in tasks_string_list:
+                if string != "":
+                    task.set(string)
+                    self.add_task()
+
+        except FileNotFoundError:
+            with open('tasks.json', 'wt') as tasks:
+                json.dump([], tasks, indent=1)
+            tasks.close()
+
+    # Method to update the .json storage file
+    def update_storage_file(self):
+        with open('tasks.json', 'wt') as tasks:
+            json.dump([w.label['text'] for w in self.winfo_children()], tasks, indent=1)
+        tasks.close()
 
 
 # Task that will be displayed in a TaskFrame instance
@@ -77,20 +103,20 @@ class Task(Frame):
     def delete_task(self):
         self.grid_forget()
         self.destroy()
-
-    @staticmethod
-    def add_task(*args):
-        Task(task_frame).grid(column=0, sticky='nswe')
-        task_entry.delete_input()
+        task_frame.update_storage_file()
 
 
+# Main window instantiation
 root = MainWindow()
 
+# String that will name tasks
 task = StringVar()
 
+# Entry and main application frame instantiation
 task_entry = TaskEntry(root)
 task_frame = TaskFrame(root)
 
 task_entry.focus()
-root.bind('<Return>', Task.add_task)
+task_frame.check_stored_tasks()
+root.bind('<Return>', task_frame.add_task)
 root.mainloop()
