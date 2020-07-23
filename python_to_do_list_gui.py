@@ -18,9 +18,9 @@ class MainWindow(Tk):
 class TaskEntry(Entry):
     def __init__(self, master, *args, **kwargs):
         super().__init__(master, *args, **kwargs)
-        self['textvariable'] = task
-        self['width'] = 15
-        self.configure(background='#222222',
+        self.configure(textvariable=task,
+                       width=15,
+                       background='#222222',
                        foreground='white',
                        highlightbackground='#222222',
                        insertbackground='white')
@@ -64,7 +64,7 @@ class TaskFrame(Frame):
     # Method to update the .json storage file
     def update_storage_file(self):
         with open('tasks.json', 'wt') as tasks:
-            json.dump([w.label['text'] for w in self.winfo_children()], tasks, indent=1)
+            json.dump([w.checkbutton['text'] for w in self.winfo_children()], tasks, indent=1)
         tasks.close()
 
 
@@ -74,31 +74,31 @@ class Task(Frame):
         super().__init__(master, *args, **kwargs)
 
         # Checkbutton to mark done tasks
-        self.checkbutton = Checkbutton(self, variable=self.info)
-        self.checkbutton.configure(background='#222222',
-                                   foreground='white',
-                                   highlightbackground='#222222',
-                                   selectcolor='#222222')
-        self.checkbutton.grid(column=1, row=1)
-
-        # Label with the task to be done
-        self.label = Label(self, text=task.get())
-        self.label.configure(background='#222222',
-                             foreground='white', height=4,
-                             anchor=W)
-        self.label.grid(column=2, row=1, sticky='nwse')
+        self.checkbutton = Checkbutton(self, text=task.get(), variable=self.info)
+        self.checkbutton.configure(activebackground='#353535',
+                                   activeforeground='#222222',
+                                   background='#353535',
+                                   foreground='#ffffff',
+                                   highlightbackground='#353535',
+                                   selectcolor='#353535',
+                                   height=3)
+        self.checkbutton.grid(column=1, row=1, sticky=W)
 
         # Button to close tasks
         self.button = Button(self, text='X', width=1, command=self.delete_task)
-        self.button.configure(bg='#222222',
-                              fg='white',
-                              highlightbackground='#222222',
+        self.button.configure(activebackground='#353535',
+                              activeforeground='#222222',
+                              bg='#353535',
+                              fg='#ffffff',
+                              highlightbackground='#353535',
                               relief='flat')
-        self.button.grid(column=3, row=1)
+        self.button.grid(column=2, row=1)
 
         # Frame color
-        self.configure(background='#222222')
-        self.grid_columnconfigure(2, weight=1)
+        self.configure(background='#353535',
+                       highlightthickness=5,
+                       highlightbackground='#222222')
+        self.grid_columnconfigure(1, weight=1)
 
     def delete_task(self):
         self.grid_forget()
