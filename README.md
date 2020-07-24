@@ -14,4 +14,3 @@ All code was written in **Python3.8** and the storage of tasks is done through a
 - Storage of the tasks ✔️
 - Dates 🚧
 - Different task lists 🚧
-- Social media interactivity 🚧
