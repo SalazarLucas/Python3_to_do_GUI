@@ -1,16 +1,27 @@
 # Python To do List
-<img src="https://raw.githubusercontent.com/SalazarLucas/Python3_to_do_GUI/master/images/to_do_list_0.1.png" alt="Application image">
 
 ## What is this project?
-This is a simple To do list graphical user interface (GUI) that I developed using **Python's** Tkinter library with what I learned from my early studies of [Tkinter documentation](https://tkdocs.com/tutorial/index.html).
+This is a simple To do list graphical user interface (GUI) that I'm developing using **Python's** Tkinter library with what I learned from my studies of [Tkinter documentation](https://tkdocs.com/tutorial/index.html).
 
-All code was written in **Python3.8** and the storage of tasks is done through a .json file that is updated always a task is added or removed.
+All code will be written in **Python3.8**.
 
-## Application features
- - Simple task addition and removal;
- - Storage of the tasks.
+## Development Process
+ ### User Interface
+ The first I'll Create the user interface items completely inoperative, only containing the application layout. The app will have a **mainwindow** with the main features, a **dialog** that'll be displayed to add new tasks to the list and another one to edit the created tasks.
 
-## Future implementations:
-- Storage of the tasks ✔️
-- Dates 🚧
-- Different task lists 🚧
+## Future Implementations:
+ ### Mainwindow:
+ - A combobox to choose between different task lists 🚧
+ - A Search entry to find a task on the grid 🚧
+ - An add Task Button that'll bring up a dialog asking 🚧
+ - An entry for quick tasks 🚧
+
+ ### New task dialog
+ - An entry to type what task should be done 🚧
+ - Another entry for the date and time 🚧
+ - A combobox to choose in what list the task will be added 🚧
+
+ ### Edit task dialog
+ - Basically everything in the new task dialog 🚧
+
+ ### Storage system 🚧
