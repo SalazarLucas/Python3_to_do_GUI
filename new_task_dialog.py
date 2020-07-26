@@ -42,9 +42,20 @@ class TaskEntry(Frame):
         Entry(self).grid(column=1, row=2, sticky='nwse')
 
 
-class Date(Entry):
+class Date(Frame):
     def __init__(self, master, **kw):
         super().__init__(master, **kw)
+        self.grid_columnconfigure(1, weight=1)
+        Label(self, text='Due date').grid(column=1, row=1, sticky=W)
+        Entry(self).grid(column=1, row=2, sticky='nwse')
+
+
+class TaskLists(Frame):
+    def __init__(self, master, **kw):
+        super().__init__(master, **kw)
+        self.grid_columnconfigure(1, weight=1)
+        Label(self, text='Add to List').grid(column=1, row=1, sticky=W)
+        ListsCombobox(self).grid(column=1, row=2, sticky='nwse')
 
 
 class DialogEntry(Frame):
@@ -52,6 +63,8 @@ class DialogEntry(Frame):
         super().__init__(master, **kw)
         self.grid_columnconfigure(1, weight=1)
         TaskEntry(self).grid(column=1, row=1, sticky='nwse')
+        Date(self).grid(column=1, row=2, sticky='nwse')
+        TaskLists(self).grid(column=1, row=3, sticky='nwse')
 
 
 root = MainWindow()
