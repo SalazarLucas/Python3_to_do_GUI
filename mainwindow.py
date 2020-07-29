@@ -5,7 +5,7 @@
 # - Entry to add quick tasks.
 from tkinter import *
 from tkinter import ttk
-from new_task_dialog import DialogMainFrame
+from new_task_dialog import DialogMainFrame, TaskWidget
 
 
 # Main Tk window
@@ -20,13 +20,19 @@ class MainWindow(Tk):
         self.grid_columnconfigure(0, weight=1)
 
     def call_new_task_dialog(self):
-        DialogMainFrame(self).grid(column=0, row=0, sticky='nwse')
+        dialog = DialogMainFrame(self)
+        dialog.grid(column=0, row=0, sticky='nwse')
 
 
 class ListsCombobox(ttk.Combobox):
     def __init__(self, master, **kw):
         super().__init__(master, **kw)
         self.configure(state='readonly', values=None)
+
+
+class Search(Entry):
+    def __init__(self, master, **kw):
+        super().__init__(master, **kw)
 
 
 class NewTaskButton(Button):
@@ -38,31 +44,38 @@ class NewTaskButton(Button):
 class QuickTask(Entry):
     def __init__(self, master, **kw):
         super().__init__(master, **kw)
+        self.task_string = StringVar(value='Enter Quick Task Here')
+        self.configure(textvariable=self.task_string)
 
-
-class Search(Entry):
-    def __init__(self, master, **kw):
-        super().__init__(master, **kw)
+        self.bind('<FocusIn>', lambda *args: self.delete(0, END))
+        self.bind('<FocusOut>', lambda *args: self.insert(0, 'Enter Quick Task Here'))
 
 
 class TaskGrid(Frame):
     def __init__(self, master, **kw):
         super().__init__(master, **kw)
+        self.grid_columnconfigure(1, weight=1)
 
 
 class TopBar(Frame):
     def __init__(self, master, **kw):
         super().__init__(master, **kw)
-        ListsCombobox(self).grid(column=0, row=0, sticky=W)
-        Search(self).grid(column=1, row=0, sticky=E)
+        self.lists_combobox = ListsCombobox(self)
+        self.search = Search(self)
+
+        self.lists_combobox.grid(column=0, row=0, sticky=W)
+        self.search.grid(column=1, row=0, sticky=E)
 
 
 class BottomBar(Frame):
     def __init__(self, master, **kw):
         super().__init__(master, **kw)
         self.grid_columnconfigure(1, weight=1)
-        QuickTask(self).grid(column=1, row=1, sticky='nwse')
-        NewTaskButton(self).grid(column=2, row=1)
+        self.quick_task_entry = QuickTask(self)
+        self.new_task_button = NewTaskButton(self)
+
+        self.quick_task_entry.grid(column=1, row=1, sticky='nwse')
+        self.new_task_button.grid(column=2, row=1)
 
 
 # Frame containing TopBar, BottomBar and TaskGrid
@@ -71,11 +84,25 @@ class MainWindowMainframe(Frame):
         super().__init__(master, **kw)
         self.grid_rowconfigure(2, weight=1)
         self.grid_columnconfigure(1, weight=1)
-        TopBar(self).grid(column=1, row=1, sticky='nwse')
-        TaskGrid(self).grid(column=1, row=2, sticky='nwse')
-        BottomBar(self).grid(column=1, row=3, sticky='nwse')
+
+        self.top_bar = TopBar(self)
+        self.task_grid = TaskGrid(self)
+        self.bottom_bar = BottomBar(self)
+
+        self.top_bar.grid(column=1, row=1, sticky='nwse')
+        self.task_grid.grid(column=1, row=2, sticky='nwse')
+        self.bottom_bar.grid(column=1, row=3, sticky='nwse')
+
+
+def add_quick_task(*args):
+    TaskWidget(mainframe.task_grid, mainframe.bottom_bar.quick_task_entry.task_string.get()).grid(sticky='nwse')
+    mainframe.task_grid, mainframe.bottom_bar.quick_task_entry.delete(0, END)
 
 
 root = MainWindow()
-MainWindowMainframe(root).grid(column=0, row=0, sticky='nwse')
+
+mainframe = MainWindowMainframe(root)
+mainframe.grid(column=0, row=0, sticky='nwse')
+mainframe.bottom_bar.quick_task_entry.bind('<Return>', add_quick_task)
+
 root.mainloop()
