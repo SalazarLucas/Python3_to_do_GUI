@@ -50,8 +50,9 @@ class Date(Frame):
     def __init__(self, master, **kw):
         super().__init__(master, **kw)
         self.grid_columnconfigure(1, weight=1)
+        self.date_string = StringVar()
         self.label = Label(self, text='Due date').grid(column=1, row=1, sticky=W)
-        self.entry = Entry(self).grid(column=1, row=2, sticky='nwse')
+        self.entry = Entry(self, textvariable=self.date_string).grid(column=1, row=2, sticky='nwse')
 
 
 class TaskLists(Frame):
@@ -74,8 +75,7 @@ class DialogMainFrame(Frame):
 
 
 class TaskWidget(Frame):
-    def __init__(self, master, txt, **kw):
+    def __init__(self, master, **kw):
         super().__init__(master, **kw)
-        self.checkbutton = Checkbutton(self, text=txt, variable=self.info).grid(column=1, row=1, sticky=W)
-
-
+        self.checkbutton = Checkbutton(self, text=None, variable=self.info).grid(column=1, row=1, sticky=W)
+        self.label = Label(self, text=None).grid(column=1, row=2)
