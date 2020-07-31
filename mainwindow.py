@@ -14,7 +14,10 @@ class Dialog(new_task_dialog.DialogMainFrame):
         self.winfo_children()[0].winfo_children()[2].configure(command=lambda *args: (self.new_task_button(), self.destroy()))
 
     def new_task_button(self):
-        new_task_dialog.TaskWidget(mainframe.task_grid, self.winfo_children()[1].new_task_string.get()).grid(sticky='nwse')
+        new_task = new_task_dialog.TaskWidget(mainframe.task_grid)
+        new_task.winfo_children()[0]['text'] = self.winfo_children()[1].new_task_string.get()
+        new_task.winfo_children()[1]['text'] = self.winfo_children()[2].date_string.get()
+        new_task.grid(sticky='nwse')
 
 
 # Main Tk window
@@ -48,12 +51,18 @@ class NewTaskButton(Button):
 class QuickTask(Entry):
     def __init__(self, master, **kw):
         super().__init__(master, **kw)
-        self.task_string = StringVar(value='Enter Quick Task Here')
-        self.configure(textvariable=self.task_string)
+        self.quick_task_string = StringVar(value='Enter Quick Task Here')
+        self.configure(textvariable=self.quick_task_string)
 
         self.bind('<FocusIn>', lambda *args: self.delete(0, END))
         self.bind('<FocusOut>', lambda *args: self.insert(0, 'Enter Quick Task Here'))
-        self.bind('<Return>', add_quick_task)
+        self.bind('<Return>', lambda *args: self.add_quick_task())
+
+    def add_quick_task(self):
+        new_task = new_task_dialog.TaskWidget(mainframe.task_grid)
+        new_task.winfo_children()[0]['text'] = self.quick_task_string.get()
+        new_task.grid(sticky='nwse')
+        mainframe.bottom_bar.quick_task_entry.delete(0, END)
 
 
 class TaskGrid(Frame):
@@ -99,14 +108,7 @@ class MainWindowMainframe(Frame):
         self.bottom_bar.grid(column=1, row=3, sticky='nwse')
 
 
-def add_quick_task(*args):
-    new_task_dialog.TaskWidget(mainframe.task_grid, mainframe.bottom_bar.quick_task_entry.task_string.get()).grid(sticky='nwse')
-    mainframe.bottom_bar.quick_task_entry.delete(0, END)
-
-
 root = MainWindow()
-
 mainframe = MainWindowMainframe(root)
 mainframe.grid(column=0, row=0, sticky='nwse')
-
 root.mainloop()
