@@ -15,20 +15,25 @@ class Dialog(new_task_dialog.DialogMainFrame):
         self.winfo_children()[0].winfo_children()[2].configure(command=lambda *args: (self.new_task_button(), self.destroy()))
 
     def new_task_button(self):
-        # Task Label
-        new_task = new_task_dialog.TaskWidget(mainframe.task_grid)
-        new_task.winfo_children()[0]['text'] = self.winfo_children()[1].new_task_string.get()
+        if self.winfo_children()[1].new_task_string.get() != 'Enter Task Here':
+            # Task Label
+            new_task = new_task_dialog.TaskWidget(mainframe.task_grid)
+            new_task.winfo_children()[0]['text'] = self.winfo_children()[1].new_task_string.get()
 
-        _date = datetime.strptime(self.winfo_children()[2].date_string.get(), '%Y-%m-%d')
-        # Date Label
-        if date.strftime(_date.date(), '%Y-%m-%d') != date.today().__str__():
-            _date = datetime.strptime(self.winfo_children()[2].date_string.get(), '%Y-%m-%d').ctime().split(' ')
-            _date.remove('')
-            new_task.winfo_children()[1]['text'] = f'{_date[0]}, {_date[1]} {_date[2]}'
+            _date = datetime.strptime(self.winfo_children()[2].date_string.get(), '%Y-%m-%d')
+            # Date Label
+            if date.strftime(_date.date(), '%Y-%m-%d') != date.today().__str__():
+                _date = datetime.strptime(self.winfo_children()[2].date_string.get(), '%Y-%m-%d').ctime().split(' ')
+                if '' in _date:
+                    _date.remove('')
+                new_task.winfo_children()[1]['text'] = f'{_date[0]}, {_date[1]} {_date[2]}'
+            else:
+                new_task.winfo_children()[1]['text'] = 'Today'
+
+            new_task.grid(sticky='nwse')
+
         else:
-            new_task.winfo_children()[1]['text'] = 'Today'
-
-        new_task.grid(sticky='nwse')
+            Dialog(root).grid(column=0, row=0, sticky='nwse')
 
 
 # Main Tk window
@@ -65,8 +70,8 @@ class QuickTask(Entry):
         self.quick_task_string = StringVar(value='Enter Quick Task Here')
         self.configure(textvariable=self.quick_task_string)
 
-        self.bind('<FocusIn>', lambda *args: self.delete(0, END))
-        self.bind('<FocusOut>', lambda *args: self.insert(0, 'Enter Quick Task Here'))
+        self.bind('<FocusIn>', lambda *args: self.delete(0, END) if self.get() == 'Enter Quick Task Here' else None)
+        self.bind('<FocusOut>', lambda *args: self.insert(0, 'Enter Quick Task Here') if not self.get() else None)
         self.bind('<Return>', lambda *args: self.add_quick_task())
 
     def add_quick_task(self):
