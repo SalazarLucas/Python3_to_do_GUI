@@ -7,6 +7,8 @@ from tkinter import *
 from tkinter import ttk
 import new_task_dialog
 from datetime import datetime, date
+from data_file_management import ToDoData
+import jsonpickle
 
 
 class Dialog(new_task_dialog.DialogMainFrame):
@@ -50,7 +52,7 @@ class MainWindow(Tk):
 class ListsCombobox(ttk.Combobox):
     def __init__(self, master, **kw):
         super().__init__(master, **kw)
-        self.configure(state='readonly', values=None)
+        self.configure(state='readonly', values=[key for key in ToDoData.lists.keys()])
 
 
 class Search(Entry):
