@@ -1,5 +1,5 @@
 from tkinter import *
-from tkinter.ttk import *
+from tkinter.ttk import Combobox, Scrollbar
 
 
 class Root(Tk):
@@ -37,9 +37,31 @@ class Lists(Combobox):
 
 
 class TaskGrid(Frame):
-    """The tasks you have to finish will be displayed in this Frame."""
+    """The tasks you have to finish will be displayed in a Frame inside this Frame."""
     def __init__(self, master, **kw):
         super().__init__(master, **kw)
+
+        # Self configuration
+        self.grid_columnconfigure(2, weight=1)
+        self.grid_rowconfigure(1, weight=1)
+
+        # Create a Canvas
+        self.canvas = Canvas(self)
+        self.canvas.grid(column=2, row=1, sticky='nwse')
+
+        # Add a Scrollbar to the canvas
+        self.scrollbar = Scrollbar(self, orient=VERTICAL, command=self.canvas.yview)
+        self.scrollbar.grid(column=3, row=1, sticky='nwse')
+
+        # Configure the canvas
+        self.canvas.configure(yscrollcommand=self.scrollbar.set)
+        self.canvas.bind('<Configure>', lambda e: self.canvas.configure(scrollregion=self.canvas.bbox('all')))
+
+        # Create Another frame inside the canvas where the tasks will be displayed
+        self.second_frame = Frame(self.canvas)
+
+        # Add that new frame to a window in the canvas
+        self.canvas.create_window((0, 0), window=self.second_frame, anchor='nw')
 
 
 class QuickTaskEntry(Entry):
@@ -61,9 +83,11 @@ class QuickTaskEntry(Entry):
 
 def display_task():
     """Function responsible to display tasks typed on the quick task entry on the task_grid instance."""
-    new_quick_task = Task(task_grid)
-    new_quick_task.checkbutton = quick_task_entry.quick_task_string
-    new_quick_task.grid(sticky=W)
+    if quick_task_entry.quick_task_string:
+        new_quick_task = Task(task_grid.second_frame)
+        new_quick_task.checkbutton = quick_task_entry.quick_task_string
+        new_quick_task.grid(sticky=W)
+        task_grid.canvas.configure(scrollregion=task_grid.canvas.bbox('all'))
 
 
 root = Root()
