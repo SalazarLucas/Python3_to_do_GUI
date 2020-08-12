@@ -16,14 +16,14 @@ The storage system is yet to be planned.
 ## Future Implementations:
  ### Mainwindow:
  - A combobox to choose between different task lists ✔
- - A Search entry to find a task on the grid ✔
- - An add Task Button that'll bring up a dialog ✔
+ - A Search entry to find a task on the grid 🚧
+ - An add Task Button that'll bring up a dialog 🚧
  - An entry for quick tasks ✔
 
  ### New task dialog:
- - An entry to type what task should be done ✔
- - Another entry for the date and time ✔
- - A combobox to choose in what list the task will be added ✔
+ - An entry to type what task should be done 🚧
+ - Another entry for the date and time 🚧
+ - A combobox to choose in what list the task will be added 🚧
 
  ### Edit task dialog:
  - Basically the same as the New task dialog 🚧
