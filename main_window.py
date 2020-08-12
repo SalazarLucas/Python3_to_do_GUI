@@ -17,7 +17,7 @@ class Task(Frame):
     the task as done."""
     def __init__(self, master, **kw):
         super().__init__(master, **kw)
-        self.__checkbutton = Checkbutton(self, variable=self.info)
+        self.__checkbutton = Checkbutton(self, variable=self.info, command=lambda *args: self.__finish_task())
         self.__checkbutton.grid(sticky=W)
 
     @property
@@ -27,6 +27,10 @@ class Task(Frame):
     @checkbutton.setter
     def checkbutton(self, text=None):
         self.__checkbutton.configure(text=text)
+
+    def __finish_task(self):
+        if self.__checkbutton['offvalue']:
+            self.destroy()
 
 
 class Lists(Combobox):
