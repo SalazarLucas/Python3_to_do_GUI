@@ -1,5 +1,5 @@
 from tkinter import *
-from tkinter.ttk import Combobox, Scrollbar
+from tkinter.ttk import Scrollbar
 
 
 class Root(Tk):
@@ -9,7 +9,7 @@ class Root(Tk):
         self.geometry('295x450')
         self.resizable(0, 0)
         self.grid_columnconfigure(0, weight=1)
-        self.grid_rowconfigure(1, weight=1)
+        self.grid_rowconfigure(0, weight=1)
 
 
 class Task(Frame):
@@ -31,13 +31,6 @@ class Task(Frame):
     def __finish_task(self):
         if self.__checkbutton['offvalue']:
             self.destroy()
-
-
-class Lists(Combobox):
-    """This is a ttk Combobox with the lists, so you can split your tasks per subject."""
-    def __init__(self, master, **kw):
-        super().__init__(master, **kw)
-        self.configure(state='readonly', values=['Teste1', 'Teste2', 'Teste3'])
 
 
 class TaskGrid(Frame):
@@ -95,12 +88,10 @@ def display_task():
 
 
 root = Root()
-lists = Lists(root)
 task_grid = TaskGrid(root)
 quick_task_entry = QuickTaskEntry(root)
 
-lists.grid(column=0, row=0, sticky='nwse')
-task_grid.grid(column=0, row=1, columnspan=2, sticky='nwse')
-quick_task_entry.grid(column=0, row=2, sticky='nwse')
+task_grid.grid(column=0, row=0, columnspan=2, sticky='nwse')
+quick_task_entry.grid(column=0, row=1, sticky='nwse')
 
 root.mainloop()
