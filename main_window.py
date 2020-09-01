@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter.ttk import Scrollbar
+from data_manager import *
 
 
 class Root(Tk):
@@ -29,8 +30,10 @@ class Task(Frame):
         self.__checkbutton.configure(text=text)
 
     def __finish_task(self):
-        if self.__checkbutton['offvalue']:
-            self.destroy()
+        self.__checkbutton.deselect()
+        self.forget()
+        self.destroy()
+        DataManager.update_data_file([t.checkbutton['text'] for t in self.master.winfo_children()])
 
 
 class TaskGrid(Frame):
@@ -60,6 +63,16 @@ class TaskGrid(Frame):
         # Add that new frame to a window in the canvas
         self.canvas.create_window((0, 0), window=self.second_frame, anchor='nw')
 
+        self.grid_stored_tasks()
+
+    def grid_stored_tasks(self):
+        if DataManager.are_there_stored_tasks():
+            for task in DataManager.stored_tasks():
+                new_task = Task(self.second_frame)
+                new_task.checkbutton = task
+                new_task.grid(sticky=W)
+                self.canvas.configure(scrollregion=self.canvas.bbox('all'))
+
 
 class QuickTaskEntry(Entry):
     """What to do? Type what you have to do in this entry and it will display your
@@ -85,6 +98,7 @@ def display_task():
         new_quick_task.checkbutton = quick_task_entry.quick_task_string
         new_quick_task.grid(sticky=W)
         task_grid.canvas.configure(scrollregion=task_grid.canvas.bbox('all'))
+        DataManager.update_data_file([t.checkbutton['text'] for t in task_grid.second_frame.winfo_children()])
 
 
 root = Root()
